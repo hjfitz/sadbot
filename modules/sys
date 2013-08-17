@@ -4,13 +4,16 @@
 #uptime= uptime
 #version= grep VERSION ../config | sed 's/[VERSION="]//g'
 
-case $1 in
-	temp)		out= sensors | grep temp1 | sed 's/(crit = +[0-9][0-9]\.[0-9]°C)//' | sed 's/temp1:\s\+ +//g';;
-	uptime)		out= uptime;;
-	version)	out= grep VERSION ../config | sed 's/[VERSION="]//g';;
-	-h)		out= "temp, uptime, version";;
-	#*) 		out= "";;
-esac
+if [ ${1} = "temp" ]; then
+    out= sensors | grep temp1 | sed 's/(crit = +[0-9][0-9]\.[0-9]°C)//' | sed 's/temp1:\s\+ +//g'
+elif [ ${1} = "uptime" ]; then
+    out=$(uptime +nc)
+elif [ ${1} = "version" ]; then
+    out= grep VERSION ./config | sed 's/[VERSION="]//g'
+else
+    out="invalid argument, commands: temp, uptime, version"
+fi
+
 echo ${out}
 
 
