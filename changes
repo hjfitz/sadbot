@@ -18,3 +18,4 @@ spectrum> fixed broken system command script
 spectrum> implemented nick retrieval function
 spectrum> added kick handler
 spectrum> added functionality for responses to private commands
+spectrum> added initial lua functionality
