@@ -25,7 +25,7 @@ ghost() {
 }
 
 get_nick() {
-    n_nick=$(echo ${1} | awk -F":" '{print $2}' | awk -F"\!" '{print $1}')
+    channick=$(echo ${1} | awk -F":" '{print $2}' | awk -F"\!" '{print $1}')
 }
 
 get_chan() {
