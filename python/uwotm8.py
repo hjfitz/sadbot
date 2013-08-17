@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-# Your handy script if you are missing an insult. 
+# Returns a proper insult
 # by andri
-# -*- coding: utf-8 -*-
 import random
 m8 = [
 "il bash ye fookin ead in i sware on me mom",
@@ -20,6 +19,7 @@ m8 = [
 "im callin me homeboys rite now preparin for a proper rumble thatll make ur nan sore jus hearin about it",
 "yer a waste bruv. my homeboys be all over tha place & ill beat ya to a proper fokin pulp with me fists wanka",
 "ill borrow me m8s cricket paddle & see if that gets u the fok out o' newcastle ya daft kunt",
-"ima shite fury & ull drown in it m8. ur in proper mess ya knobhead"
+"ima shite fury & ull drown in it m8. ur in proper mess ya knobhead",
+"il shank ur nan in the tits m8"
 ]
 print random.choice(m8)
