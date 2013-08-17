@@ -4,3 +4,17 @@ spectrum> compartmentalised message functions to external file for sourcing
 spectrum> cleaned indentation up
 spectrum> added get_chan() function [muh nickchan]
 spectrum> multiple channel response supported
+
+16/08/2013
+----------
+spectrum> added functionality for simultaneous responses in multiple channels
+spectrum> modularisation of functions
+spectrum> added alternative nick
+
+17/08/2013
+----------
+spectrum> updated to latest andri scripts
+spectrum> fixed broken system command script
+spectrum> implemented nick retrieval function
+spectrum> updated nick retrieval function
+spectrum> added functionality for responses to private commands
