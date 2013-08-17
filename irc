@@ -1,5 +1,28 @@
 # shit's not ready
 # will be in future releases i guess
+join() {
+    for chan in ${CHANNEL[@]}; do
+        echo "JOIN $chan" >&3;
+    done
+}
+
+ident() {
+    echo "NICK :${NICK}" >&3;
+    echo "PRIVMSG nickserv :IDENTIFY ${PASSWORD}" >&3;
+    echo "» Identified with nickserv"
+}
+
+ghost() {
+    if [[ $msg_in =~ "${NICK} :Nickname is already in use." ]] ; then
+        echo "NICK :${NICK_ALT}" >&3;
+        echo "PRIVMSG nickserv :GHOST ${NICK} ${PASSWORD}" >&3;
+        sleep 2;
+    ghost=false
+    join
+    sleep 2;
+    ident
+    fi
+}
 
 get_chan() {
     nickchan=$(echo ${1} | awk '{print $3}')
