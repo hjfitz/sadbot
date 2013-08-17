@@ -40,11 +40,11 @@ conn() {
 
 parse() {
     IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
-    for mod in ${MODULES[@]}; do 
+    for mod in ${MODULES[@]}; do                                    #loads modules
         if [[ $msg_in =~ "::$mod" ]]; then
-            delim="::$mod"
-            arg=$(echo $msg_in | awk -F $delim '{print $NF}')
-            get_chan $msg_in
+            delim="::$mod"                                          #searches for input with a prefix command
+            arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
+            get_chan $msg_in                #obtain the channel of origin and the sender
 	        get_nick $msg_in
             handle
         fi
@@ -52,17 +52,17 @@ parse() {
 }
 
 handle() {
-    if [[ $nickchan = $NICK ]]; then
-        chan=$channick
+    if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
+        chan=$channick                  #if so, sets the output directly back to the sender
     else
-        chan=$nickchan
+        chan=$nickchan                  #otherwise set the output as the channel of origin
     fi
     
-    output=$(./modules/$mod $arg)
-    strip=$(echo $output | awk -F '<<' '{print $NF}')
+    output=$(./modules/$mod $arg)                       #raw output from module
+    strip=$(echo $output | awk -F '<<' '{print $NF}')   #removes prefixes
     
-    if [[ $output =~ ">>ACT<<" ]]; then
-        msg_act $chan $strip
+    if [[ $output =~ ">>ACT<<" ]]; then      #searches for prefixes in input and chooses
+        msg_act $chan $strip                 #appropriate output function
     elif [[ $output =~ ">>MSG<<" ]]; then
         msg_out $chan $strip
     elif [[ $output =~ ">>RBC<<" ]]; then
