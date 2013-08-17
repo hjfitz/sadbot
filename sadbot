@@ -59,16 +59,16 @@ handle() {
     fi
     
     output=$(./modules/$mod $arg)
+    strip=$(echo $output | awk -F '<<' '{print $NF}')
     
     if [[ $output =~ ">>ACT<<" ]]; then
-        strip=$(echo $output | awk -F '<<' '{print $NF}')
         msg_act $chan $strip
     elif [[ $output =~ ">>MSG<<" ]]; then
-        strip=$(echo $output | awk -F '<<' '{print $NF}')
         msg_out $chan $strip
     elif [[ $output =~ ">>RBC<<" ]]; then
-        strip=$(echo $output | awk -F '<<' '{print $NF}')
         msg_rbc $chan $strip
+    elif [[ $output =~ ">>KICK<<" ]]; then
+        kick $chan $strip
     else 
         msg_out $chan $(./modules/$mod $arg) 
     fi
