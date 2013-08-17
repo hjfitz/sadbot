@@ -16,5 +16,5 @@ spectrum> added alternative nick
 spectrum> updated to latest andri scripts
 spectrum> fixed broken system command script
 spectrum> implemented nick retrieval function
-spectrum> updated nick retrieval function
+spectrum> added kick handler
 spectrum> added functionality for responses to private commands
