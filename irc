@@ -57,6 +57,6 @@ msg_col() {
 }
 
 msg_act() {
-    echo "PRIVMSG ${1} :$(echo -ne "\001")ACTION ${2}" >&3;
+    echo "PRIVMSG ${1} :$(echo -ne "\001")ACTION ${2}$(echo -ne "\001")" >&3;
 }
 	
