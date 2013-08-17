@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-joining=true
-ghost=true
+run=true
 
 helpp() {
     echo " "
@@ -19,6 +18,7 @@ case $@ in
 esac
 
 init() {
+    ghost=true
     if $hlp ; then 
         helpp
     fi
@@ -45,9 +45,25 @@ parse() {
             delim="::$mod"
             arg=$(echo $msg_in | awk -F $delim '{print $NF}')
             get_chan $msg_in
-            msg_out $nickchan $(./modules/$mod $arg)
-	fi
+	        handle
+        fi
     done
+}
+
+handle() {
+    output=$(./modules/$mod $arg)
+    if [[ $output =~ ">>ACT<<" ]]; then
+        strip=$(echo $output | awk -F '<<' '{print $NF}')
+        msg_act $nickchan $strip
+    elif [[ $output =~ ">>MSG<<" ]]; then
+        strip=$(echo $output | awk -F '<<' '{print $NF}')
+        msg_out $nickchan $strip
+    elif [[ $output =~ ">>RBC<<" ]]; then
+        strip=$(echo $output | awk -F '<<' '{print $NF}')
+        msg_rbc $nickchan $strip
+    else 
+        msg_out $nickchan $(./modules/$mod $arg) 
+    fi
 }
 
 main() {
@@ -59,38 +75,14 @@ main() {
     parse
     ping
     ghost 		#will ghost but doesn't join channels
-    if $joining ; then	#really hacky please fix me
-	if $ghost ; then
-	    joinchan
-	    echo "» Joining Channels"
-	    ident
-	fi
-	joining=false
+    if $run ; then	#really hacky please fix me
+	    if $ghost ; then
+	        join
+	        echo "» Joining Channels"
+	        ident
+        fi
+        run=false
     fi
-    done
-}
-
-ghost() {
-    if [[ $msg_in =~ "${NICK} :Nickname is already in use." ]] ; then
-        echo "NICK :sadbot1" >&3;
-        echo "PRIVMSG nickserv :GHOST ${NICK} ${PASSWORD}" >&3;
-        sleep 2;
-	ghost=false
-	joinchan
-	sleep 2;
-	ident
-    fi
-}
-
-ident() {
-    echo "NICK :${NICK}" >&3;
-    echo "PRIVMSG nickserv :IDENTIFY ${PASSWORD}" >&3;
-    echo "» Identified with nickserv"
-}
-
-joinchan() {
-    for chan in ${CHANNEL[@]}; do
-        echo "JOIN $chan" >&3;
     done
 }
 
