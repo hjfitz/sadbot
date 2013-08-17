@@ -45,24 +45,32 @@ parse() {
             delim="::$mod"
             arg=$(echo $msg_in | awk -F $delim '{print $NF}')
             get_chan $msg_in
-	        handle
+	        get_nick $msg_in
+            handle
         fi
     done
 }
 
 handle() {
+    if [[ $nickchan = $NICK ]]; then
+        chan=$channick
+    else
+        chan=$nickchan
+    fi
+    
     output=$(./modules/$mod $arg)
+    
     if [[ $output =~ ">>ACT<<" ]]; then
         strip=$(echo $output | awk -F '<<' '{print $NF}')
-        msg_act $nickchan $strip
+        msg_act $chan $strip
     elif [[ $output =~ ">>MSG<<" ]]; then
         strip=$(echo $output | awk -F '<<' '{print $NF}')
-        msg_out $nickchan $strip
+        msg_out $chan $strip
     elif [[ $output =~ ">>RBC<<" ]]; then
         strip=$(echo $output | awk -F '<<' '{print $NF}')
-        msg_rbc $nickchan $strip
+        msg_rbc $chan $strip
     else 
-        msg_out $nickchan $(./modules/$mod $arg) 
+        msg_out $chan $(./modules/$mod $arg) 
     fi
 }
 
