@@ -1,4 +1,20 @@
-IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
+#!/bin/bash
 
+IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
 cmds=$(for mod in ${MODULES[@]}; do echo $mod; done)
-echo $cmds
+
+IFS=$'\r\n' PYMOD=($(for file in ./python/*; do echo ${file##*/}; done)) 
+pycmds=$(for mod in ${PYMOD[@]}; do echo $mod; done)
+
+IFS=$'\r\n' LUAMOD=($(for file in ./lua/*; do echo ${file##*/}; done))
+luacmds=$(for mod in ${LUAMOD[@]}; do echo $mod; done)
+
+if [[ ${1#?} = "lua" ]]; then
+    out=$luacmds
+elif [[ ${1#?} = "py" ]]; then
+    out=$pycmds
+else
+    out=$cmds
+fi
+
+echo $out
