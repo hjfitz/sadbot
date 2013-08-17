@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [[ ! ${1} ]]; then
+    arg=""
+else
+    arg="${1#?}, "
+fi
+
+msg=" beer is well top m8, here have some beer"
+echo "$arg""${msg#?}"
+

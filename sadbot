@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+
+joining=true
+ghost=true
+
+helpp() {
+    echo " "
+    echo "» SADBOT -configuration for networks + channels found in sadbot/config"
+    echo "» modues found in sadbot/modules - called by filename, output in to channel whatever the file prints"
+}
+
+verbose=false
+hlp=false
+case $@ in
+	-v) verbose=true;;
+	--verbose) verbose=true;;
+	-h) hlp=true;;
+	--help) hlp=true;;
+esac
+
+init() {
+    if $hlp ; then 
+        helpp
+    fi
+    source ./config
+    source ./irc
+    echo " "
+    echo "» Sadbot - Spectrum Andri Droid BOT"
+    echo "» Jonnecting to $NETWORK with nick \`$NICK\`"
+    for chan in ${CHANNEL[@]}; do
+	    echo "» Joining $chan"
+    done
+}
+
+conn() {
+    exec 3<>/dev/tcp/${NETWORK}/${PORT}; #connects to irc network
+    echo "USER ${IDENT} 0 1 :$IRCNAME " >&3;
+    echo "NICK ${NICK}" >&3;
+}
+
+parse() {
+    IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
+    for mod in ${MODULES[@]}; do 
+        if [[ $msg_in =~ "::$mod" ]]; then
+            delim="::$mod"
+            arg=$(echo $msg_in | awk -F $delim '{print $NF}')
+            get_chan $msg_in
+            msg_out $nickchan $(./modules/$mod $arg)
+	fi
+    done
+}
+
+main() {
+    while [ true ]; do
+	read msg_in <&3;
+        if $verbose ; then
+	    echo $msg_in
+	fi
+    parse
+    ping
+    ghost 		#will ghost but doesn't join channels
+    if $joining ; then	#really hacky please fix me
+	if $ghost ; then
+	    joinchan
+	    echo "» Joining Channels"
+	    ident
+	fi
+	joining=false
+    fi
+    done
+}
+
+ghost() {
+    if [[ $msg_in =~ "${NICK} :Nickname is already in use." ]] ; then
+        echo "NICK :sadbot1" >&3;
+        echo "PRIVMSG nickserv :GHOST ${NICK} ${PASSWORD}" >&3;
+        sleep 2;
+	ghost=false
+	joinchan
+	sleep 2;
+	ident
+    fi
+}
+
+ident() {
+    echo "NICK :${NICK}" >&3;
+    echo "PRIVMSG nickserv :IDENTIFY ${PASSWORD}" >&3;
+    echo "» Identified with nickserv"
+}
+
+joinchan() {
+    for chan in ${CHANNEL[@]}; do
+        echo "JOIN $chan" >&3;
+    done
+}
+
+init && conn && main;

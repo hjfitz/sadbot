@@ -1,0 +1,6 @@
+15/08/2013
+----------
+spectrum> compartmentalised message functions to external file for sourcing
+spectrum> cleaned indentation up
+spectrum> added get_chan() function [muh nickchan]
+spectrum> multiple channel response supported

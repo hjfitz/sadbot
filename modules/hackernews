@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/hackernews.py $1

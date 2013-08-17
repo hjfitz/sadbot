@@ -1,0 +1,4 @@
+IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
+
+cmds=$(for mod in ${MODULES[@]}; do echo $mod; done)
+echo $cmds

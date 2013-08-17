@@ -1,0 +1,10 @@
+# config for sadbot
+
+VERSION="0.0.1a"
+NETWORK="irc.rizon.net"
+PORT="6667"
+NICK="sadbot"
+IDENT="SAD"
+IRCNAME="SAD"
+CHANNEL=( "#/g/summer" "#sadbot-dev" "#/g/love" )
+PASSWORD="sadbutt"

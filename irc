@@ -1,0 +1,35 @@
+# shit's not ready
+# will be in future releases i guess
+
+get_chan() {
+    nickchan=$(echo ${1} | awk '{print $3}')
+}
+
+ping() {
+    if [[ $msg_in =~ "PING" ]] ; then
+        echo $msg_in;
+        echo "PONG %s\n" "${msg_in:5}";
+        echo "PONG %s\r\n" "${msg_in:5}" >&3; #don't ping out
+    fi      
+}  
+
+kick() {
+    echo "KICK ${1} :${2}" >&3;
+}
+       
+msg_out() {
+    echo "PRIVMSG ${1} :${2}" >&3;
+}
+
+msg_rbc() {
+    echo "PRIVMSG ${1} :$(toilet --gay --irc -fterm ${2})" >&3;
+}
+
+msg_col() {
+    echo "PRIVMSG ${1} :$(echo -ne "\003")1${2}" >&3;
+}
+
+msg_act() {
+    echo "PRIVMSG ${1} :$(echo -ne "\001")ACTION ${2}" >&3;
+}
+	

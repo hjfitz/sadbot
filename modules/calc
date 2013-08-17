@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/calc.py $1

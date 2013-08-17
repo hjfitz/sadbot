@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/distro.py $1

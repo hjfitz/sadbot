@@ -1,0 +1,7 @@
+#!/bin/bash
+
+case $@
+	a) echo "a";;
+	h) echo "helps";;
+	*) echo "na mate";;
+esac

@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/uwotm8.py $1
