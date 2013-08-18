@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/8ball.py $1 $2
