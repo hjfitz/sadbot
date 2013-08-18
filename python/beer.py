@@ -3,5 +3,9 @@
 # by andri
 from sys import argv
 
-recipient = ' '.join(argv[1:]).strip(' ')
-print ">>ACT<< hands %s a beer." %recipient
+if len(argv) == 2:
+    recipient = argv[1]
+else:
+    recipient = ' '.join(argv[2:]).strip(' ')
+
+print "[me] hands %s a beer." %recipient

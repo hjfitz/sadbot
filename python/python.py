@@ -5,8 +5,8 @@ import urllib2
 from sys import argv
 
 url = "http://tumbolia.appspot.com/py/"
-a = ' '.join(argv[1:]).encode('utf-8')
-b = urllib2.urlopen(url + urllib2.quote(a)).readlines()[0].strip('\n')
+a = ' '.join(argv[2:])
+b = urllib2.urlopen(url + urllib2.quote(a)).readlines()[0].strip('\n')[:400]
 
 if b:
     print b

@@ -5,7 +5,7 @@ import urllib2
 from sys import argv
 
 url = "http://www.anagramgenius.com/server.php?source_text="
-word = '+'.join(argv[1:])
+word = '+'.join(argv[2:])
 if len(word) >= 7 and len(word) <= 30:
     site = urllib2.urlopen(url+word).readlines()[75]
     ey = site[site.find("""o<br><span class="black-18">""")+29:-16]

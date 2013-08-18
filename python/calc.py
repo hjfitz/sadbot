@@ -6,7 +6,7 @@ from sys import argv
 import urllib2
 
 url = "http://www.google.com/ig/calculator?q="
-a = ' '.join(argv[1:])
+a = ' '.join(argv[2:])
 b = urllib2.urlopen(url + urllib2.quote(a))
 b = b.readlines()[0]
 b = b[b.find('rhs: "')+6:b.find('",e')]
