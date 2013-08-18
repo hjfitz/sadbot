@@ -3,16 +3,16 @@ local http = require "socket.http"
 local json = require "json"
 
 -- get data
-if arg[2] then
-    arg[1] = arg[1] .. " " .. arg[2]
+if arg[3] then
+    arg[2] = arg[2] .. " " .. arg[3]
 end
 
-arg[1] = arg[1]:gsub(" ", "_")
+arg[2] = arg[2]:gsub(" ", "_")
 
-if not arg[1] then
+if not arg[2] then
     return("This command requires an argument")
 else
-    local result = http.request("http://en.wikipedia.org/w/api.php?action=query&prop=info&inprop=url&format=json&titles=" .. arg[1])
+    local result = http.request("http://en.wikipedia.org/w/api.php?action=query&prop=info&inprop=url&format=json&titles=" .. arg[2])
     local result = json.decode(result)
     if (result and result.query and result.query.pages) then
         local result = select(2, next(result.query.pages))
