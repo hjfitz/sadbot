@@ -1,0 +1,2 @@
+print(tostring(os.date()))
+
