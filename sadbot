@@ -58,7 +58,7 @@ handle() {
         chan=$nickchan                  #otherwise set the output as the channel of origin
     fi
     
-    output=$(./modules/$mod $arg)                       #raw output from module
+    output=$(./modules/$mod $channick $arg)                       #raw output from module
     strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
     
     if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
@@ -70,7 +70,7 @@ handle() {
     elif [[ $output =~ "[k]" ]]; then
         kick $chan $strip
     else 
-        msg_out $chan $(./modules/$mod $arg) 
+        msg_out $chan $(./modules/$mod $channick $arg) 
     fi
 }
 

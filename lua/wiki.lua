@@ -20,7 +20,7 @@ else
             return("Error with wikipedia request")
         end
         -- format data
-        print(result.title .. " - " .. result.fullurl)
+        print(result.title .. " -> " .. result.fullurl)
     else
         print("Error with wikipedia request.");
     end

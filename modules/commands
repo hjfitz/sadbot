@@ -9,9 +9,9 @@ pycmds=$(for mod in ${PYMOD[@]}; do echo $mod; done)
 IFS=$'\r\n' LUAMOD=($(for file in ./lua/*; do echo ${file##*/}; done))
 luacmds=$(for mod in ${LUAMOD[@]}; do echo $mod; done)
 
-if [[ ${1#?} = "lua" ]]; then
+if [[ ${2#?} = "lua" ]]; then
     out=$luacmds
-elif [[ ${1#?} = "py" ]]; then
+elif [[ ${2#?} = "py" ]]; then
     out=$pycmds
 else
     out=$cmds

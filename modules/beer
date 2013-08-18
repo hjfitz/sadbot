@@ -1,5 +1,4 @@
-#!/bin/bash
+#/bin/bash
 
-name=$(echo $1 | awk '{$1=$1}1')
-echo ">>ACT<< hands $name a pint of beer"
+python2 ./python/beer.py $1 $2
 

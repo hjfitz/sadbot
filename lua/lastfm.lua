@@ -37,7 +37,7 @@ else
             if title:find('+') then title = repspace(title, '+', ' ') end
             if title:find('/') then title = repspace(title, '/', '') end
             if title:find('_') then title = repspace(title, '_', ' -- ') end
-            print(title)
+            print(arg[1] .. " last listened to: " .. title)
             return
         end
 end
