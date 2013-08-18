@@ -26,10 +26,13 @@ function getpage(url)
     return page
 end
 
-if not arg[1] then
-    print("gibe username first")
+if arg[2] then
+    argz = arg[2]
 else
-    local page = getpage('http://www.last.fm/user/' .. arg[1])
+    argz = arg[1]
+end
+
+local page = getpage('http://www.last.fm/user/' .. argz)
         for l in page:gmatch("[^\r\n]+") do
             if l:find('a href="/music/') then
             local tit = l:sub((l:find('a href="/music/')+15), #l)
@@ -37,9 +40,8 @@ else
             if title:find('+') then title = repspace(title, '+', ' ') end
             if title:find('/') then title = repspace(title, '/', '') end
             if title:find('_') then title = repspace(title, '_', ' -- ') end
-            print(arg[1] .. " last listened to: " .. title)
+            print(argz .. " last listened to: " .. title)
             return
         end
-end
 end
 
