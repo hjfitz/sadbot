@@ -59,15 +59,15 @@ handle() {
     fi
     
     output=$(./modules/$mod $arg)                       #raw output from module
-    strip=$(echo $output | awk -F '<<' '{print $NF}')   #removes prefixes
+    strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
     
-    if [[ $output =~ ">>ACT<<" ]]; then      #searches for prefixes in input and chooses
+    if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
         msg_act $chan $strip                 #appropriate output function
-    elif [[ $output =~ ">>MSG<<" ]]; then
+    elif [[ $output =~ "[msg]" ]]; then
         msg_out $chan $strip
-    elif [[ $output =~ ">>RBC<<" ]]; then
+    elif [[ $output =~ "[rb]" ]]; then
         msg_rbc $chan $strip
-    elif [[ $output =~ ">>KICK<<" ]]; then
+    elif [[ $output =~ "[k]" ]]; then
         kick $chan $strip
     else 
         msg_out $chan $(./modules/$mod $arg) 
