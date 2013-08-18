@@ -1,3 +1,0 @@
-#/bin/bash
-
-lua5.1 ./lua/test.lua $1
