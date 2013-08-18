@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/wolfram.py $1 $2
