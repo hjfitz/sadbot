@@ -1,0 +1,26 @@
+#!/bin/bash
+# Adds colorcodes; source this in your script
+# For ease of color input
+# Remember to 'echo -e ${fg_red} foo'
+
+if [[ $(uname) == "Linux" ]] ; then
+    fg_black="$(tput setaf 0)"
+    fg_red="$(tput setaf 1)"
+    fg_green="$(tput setaf 2)"
+    fg_yellow="$(tput setaf 3)"
+    fg_blue="$(tput setaf 4)"
+    fg_magenta="$(tput setaf 5)"
+    fg_cyan="$(tput setaf 6)"
+    fg_white="$(tput setaf 7)"
+    reset="$(tput sgr0)"
+elif [[ $(uname) == "BSD" ]] ; then
+    fg_black="$(tput AF 0)"
+    fg_red="$(tput AF 1)"
+    fg_green="$(tput AF 2)"
+    fg_yellow="$(tput AF 3)"
+    fg_blue="$(tput AF 4)"
+    fg_magenta="$(tput AF 5)"
+    fg_cyan="$(tput AF 6)"
+    fg_white="$(tput AF 7)"
+    reset="$(tput me)"
+fi
