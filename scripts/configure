@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [[ -f $1 ]] ; then
+    echo "Please run ./configure with a file as an arguement"
+fi
+
+echo "give the middleman file a name: "
+read filename
+echo "this is what will cause the command to run in the channel"
+
+filetype= head -1 $1
+touch $filetype\.sh
+
+if [[ $filetype =~ "lua" ]] ; then
+    echo "#!/usr/bin/env lua5.1" >> $filetype\.sh
+    
+  
