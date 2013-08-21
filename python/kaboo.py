@@ -38,7 +38,7 @@ quotes = [
 " im trying to put out the messagee that ugly people are weak and good looking people are strpong",
 "i dont have boobs",
 ">tfw hungery",
-"/me feels the hot sauce hit its skin and panicks running aornd in a new world of pain searching desperatly for milk"
+"[me]feels the hot sauce hit its skin and panicks running aornd in a new world of pain searching desperatly for milk"
 "O.O this game dont fuck around i already died ;-;",
 "then whos dog did i eat?",
 "its not allowed to be 4chans 9th birthday and moots an asshole for it",
