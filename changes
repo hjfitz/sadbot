@@ -1,15 +1,7 @@
-15/08/2013
-----------
-spectrum> compartmentalised message functions to external file for sourcing
-spectrum> cleaned indentation up
-spectrum> added get_chan() function [muh nickchan]
-spectrum> multiple channel response supported
-
-16/08/2013
-----------
-spectrum> added functionality for simultaneous responses in multiple channels
-spectrum> modularisation of functions
-spectrum> added alternative nick
+21/08/2013
+---------
+Corg-kun> added kaboo module
+Corg-kun> cleaned up changefile
 
 17/08/2013
 ----------
@@ -19,3 +11,16 @@ spectrum> implemented nick retrieval function
 spectrum> added kick handler
 spectrum> added functionality for responses to private commands
 spectrum> added initial lua functionality
+
+16/08/2013
+----------
+spectrum> added functionality for simultaneous responses in multiple channels
+spectrum> modularisation of functions
+spectrum> added alternative nick
+
+15/08/2013
+----------
+spectrum> compartmentalised message functions to external file for sourcing
+spectrum> cleaned indentation up
+spectrum> added get_chan() function [muh nickchan]
+spectrum> multiple channel response supported
