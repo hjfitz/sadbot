@@ -25,7 +25,7 @@ init() {
     source ./config
     source ./irc
     echo " "
-    echo "» Sadbot - Spectrum Andri Droid BOT"
+    echo "» Sadbot - Spectrum Andri Andy Droid BOT"
     echo "» Jonnecting to $NETWORK with nick \`$NICK\`"
     for chan in ${CHANNEL[@]}; do
 	    echo "» Joining $chan"
@@ -49,6 +49,35 @@ parse() {
             handle
         fi
     done
+    
+    IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
+    for trig in ${TRIGGERS[@]}; do
+        get_chan $msg_in
+        get_nick $msg_in
+        if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
+            chan=$channick                  #if so, sets the output directly back to the sender
+        else
+            chan=$nickchan                  #otherwise set the output as the channel of origin
+        fi
+        if [ $(./triggers/$trig $msg_in) ]; then
+            output=$(./triggers/$trig "$msg_in")                       #raw output from module
+             
+            strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
+                 
+            if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
+                msg_act $chan $strip                 #appropriate output function
+            elif [[ $output =~ "[msg]" ]]; then
+                msg_out $chan $strip
+            elif [[ $output =~ "[rb]" ]]; then
+                msg_rbc $chan $strip 
+            elif [[ $output =~ "[k]" ]]; then
+                kick $chan $strip
+            else 
+                 msg_out $chan $(./triggers/$trig "$msg_in")
+            fi
+        fi
+    done
+
 }
 
 log() {
@@ -67,8 +96,8 @@ handle() {
     else
         chan=$nickchan                  #otherwise set the output as the channel of origin
     fi
-    
-    output=$(./modules/$mod $channick $arg)                       #raw output from module
+ 
+    output=$(./modules/$mod $channick $arg $msg_in)                       #raw output from module
     strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
     
     if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
@@ -80,7 +109,7 @@ handle() {
     elif [[ $output =~ "[k]" ]]; then
         kick $chan $strip
     else 
-        msg_out $chan $(./modules/$mod $channick $arg) 
+        msg_out $chan $(./modules/$mod "$channick" "$arg" "$msg_in") 
     fi
 }
 
@@ -92,8 +121,8 @@ main() {
 	fi
     parse
     ping
-    ghost 
-    log    #will ghost but doesn't join channels
+    ghost 		#will ghost but doesn't join channels
+    log
     if $run ; then	#really hacky please fix me
 	    if $ghost ; then
 	        join
