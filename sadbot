@@ -81,11 +81,11 @@ parse() {
 }
 
 log() {
-    folderchan= "$($chan | sed 's/\//-/g')"
-    if [[ -d ./logs/$folderchan ]] ; then
+    folderchan=$(echo $channick | sed 's/\//-/g')
+    if [[ -f ./logs/$folderchan ]] ; then
         echo $(date | sed 's/[A-Za-z]ST 201[0-9]//g') ":" "${msg_in}" >> ./logs/$folderchan
     else
-        mkdir ./logs/$folderchan
+        touch ./logs/$folderchan
         echo $(date | sed 's/[A-Za-z]ST 201[0-9]//g') ":" "${msg_in}" >> ./logs/$folderchan
     fi
 }
@@ -122,7 +122,7 @@ main() {
     parse
     ping
     ghost 		#will ghost but doesn't join channels
-#    log
+    log
     if $run ; then	#really hacky please fix me
 	    if $ghost ; then
 	        join
