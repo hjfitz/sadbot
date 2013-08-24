@@ -51,6 +51,16 @@ parse() {
     done
 }
 
+log() {
+    folderchan= "$($chan | sed 's/\//-/g')"
+    if [[ -d ./logs/$folderchan ]] ; then
+        echo $(date | sed 's/[A-Za-z]ST 201[0-9]//g') ":" "${msg_in}" >> ./logs/$folderchan
+    else
+        mkdir ./logs/$folderchan
+        echo $(date | sed 's/[A-Za-z]ST 201[0-9]//g') ":" "${msg_in}" >> ./logs/$folderchan
+    fi
+}
+
 handle() {
     if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
         chan=$channick                  #if so, sets the output directly back to the sender
@@ -82,7 +92,8 @@ main() {
 	fi
     parse
     ping
-    ghost 		#will ghost but doesn't join channels
+    ghost 
+    log    #will ghost but doesn't join channels
     if $run ; then	#really hacky please fix me
 	    if $ghost ; then
 	        join
