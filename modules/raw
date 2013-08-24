@@ -1,0 +1,5 @@
+#!/bin/bash
+global=true
+
+python ./python/raw.py "$3"
+
