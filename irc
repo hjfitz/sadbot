@@ -36,8 +36,8 @@ get_chan() {
 
 ping() {
     if [[ $msg_in =~ "PING" ]] ; then
-        echo $msg_in;
-        echo "PONG %s\n" "${msg_in:5}";
+#        echo $msg_in;
+#        echo "PONG %s\n" "${msg_in:5}";
         echo "PONG %s\r\n" "${msg_in:5}" >&3; #don't ping out
     fi      
 }  
