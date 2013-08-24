@@ -1,1 +1,1 @@
-print(arg[1])
+print(string.format(arg[1]:match( "^%s*(.-)%s*$" )))

@@ -1,1 +1,1 @@
-print("[rb]" .. arg[1])
+print(string.format("[rb]" .. arg[1]:match( "^%s*(.-)%s*$" )))  
