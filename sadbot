@@ -49,7 +49,8 @@ parse() {
             handle
         fi
     done
-    
+    if [[ $msg_in =~ "PRIVMSG" ]]; then
+
     IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
     for trig in ${TRIGGERS[@]}; do
         get_chan $msg_in
@@ -59,10 +60,10 @@ parse() {
         else
             chan=$nickchan                  #otherwise set the output as the channel of origin
         fi
-        
+        source ./triggers/$trig        
         arg=$(echo $msg_in | awk -F ':' '{print $NF}') 
         
-        if [ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]; then
+        if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then
             output=$(./triggers/$trig "$channick" "$arg" "$msg_in")                       #raw output from module
             strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
                  
@@ -79,6 +80,7 @@ parse() {
             fi
         fi
     done
+fi
 
 }
 
