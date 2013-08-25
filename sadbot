@@ -60,7 +60,7 @@ parse() {
         else
             chan=$nickchan                  #otherwise set the output as the channel of origin
         fi
-        source ./triggers/$trig        
+        
         arg=$(echo $msg_in | awk -F ':' '{print $NF}') 
         
         if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then
