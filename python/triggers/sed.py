@@ -5,7 +5,7 @@ from sys import argv
 import os
 
 nick = '<'+argv[1]+'>'
-channel = argv[2]
+channel = argv[2].split(' ')[2]
 sed = ' '.join(argv[3:])
 
 print sed
