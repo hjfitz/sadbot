@@ -74,7 +74,11 @@ parse() {
             elif [[ $output =~ "[rb]" ]]; then
                 msg_rbc $chan $strip 
             elif [[ $output =~ "[k]" ]]; then
-                kick $chan $strip
+                if [[ $strip =~ "sadbot" ]]; then
+                    msg_out $chan "nice try"
+                else
+                    kick $chan $strip
+                fi
             else 
                  msg_out $chan $(./triggers/$trig "$channick" "$arg" "$msg_in")
             fi
@@ -111,7 +115,11 @@ handle() {
     elif [[ $output =~ "[rb]" ]]; then
         msg_rbc $chan $strip
     elif [[ $output =~ "[k]" ]]; then
-        kick $chan $strip
+        if [[ $strip =~ "sadbot" ]]; then
+            msg_out $chan "nice try"
+        else
+            kick $chan $strip
+        fi
     else 
         msg_out $chan $(./modules/$mod "$channick" "$arg" "$msg_in") 
     fi
