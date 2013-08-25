@@ -16,7 +16,10 @@ if message.upper() == message and len(message) > 4:
     with open("./data/shoutdb", 'r+') as f:
         #creat a list of strings of past shouted messages.
         db = f.read().splitlines()
-        print choice(db)
         #randomly choose an element from the db to shout back
         f.write(message + '\n')
+        out = choice(db)
+        if not message == out:
+            print out
+
 
