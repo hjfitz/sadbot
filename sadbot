@@ -51,9 +51,6 @@ parse() {
     done
     
     IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
-    if [[ $msg_in =~ "PRIVMSG $nickchan" ]]; then
-        log
-    fi
     for trig in ${TRIGGERS[@]}; do
         get_chan $msg_in
         get_nick $msg_in
@@ -126,10 +123,15 @@ main() {
     parse
     ping
     ghost 		#will ghost but doesn't join channels
+    for chan in ${CHANNEL[@]}; do
+        if [[ $msg_in =~ "PRIVMSG $chan" ]]; then
+            log
+        fi
+    done
     if $run ; then	#really hacky please fix me
 	    if $ghost ; then
 	        join
-	        echo "» Joining Channels"
+            echo "» Joining Channels"
 	        ident
         fi
         run=false
