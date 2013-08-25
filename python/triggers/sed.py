@@ -8,12 +8,11 @@ nick = '<'+argv[1]+'>'
 channel = argv[2].split(' ')[2]
 sed = ' '.join(argv[3:])
 
-print sed
 if sed[:2] == "s/" and "/" in sed[2:]:
     if '\\' in sed:
         print "sry but na"
     else:
-        with open("logs/%s.txt" %channel.replace('/','_')) as f:
+        with open("logs/%s" %channel.replace('/','-')) as f:
             f = f.read().split('\n')[::-1]
             for i in f:
                 if nick in i:
@@ -22,11 +21,10 @@ if sed[:2] == "s/" and "/" in sed[2:]:
                 else:
                     continue
                 break
-        print msg
         if sed[-2:] == "/g":
             ye = "g"
         else:
             ye = ""
         i, o = sed.split('/')[1:3]
         a = os.popen("echo \"%s\" | sed 's/%s/%s/%s'" %(msg, i, o, ye)).read().replace('\n','')
-        print a
+        print nick, a
