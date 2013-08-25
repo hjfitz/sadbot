@@ -1,0 +1,3 @@
+#!/bin/bash
+
+python2 ./python/triggers/sed.py $1 $3 $2
