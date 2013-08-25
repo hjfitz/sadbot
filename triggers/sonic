@@ -1,5 +1,4 @@
 #!/bin/bash
-
-if [[ ${1} =~ "STEP IT UP" ]]; then
+if [[ $2 =~ "STEP IT UP" ]]; then
     echo "[rb]sanic d hedg hog"
 fi
