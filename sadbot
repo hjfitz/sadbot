@@ -60,9 +60,10 @@ parse() {
             chan=$nickchan                  #otherwise set the output as the channel of origin
         fi
         
-        if [ $(./triggers/$trig $msg_in) ]; then
-            output=$(./triggers/$trig "$msg_in")                       #raw output from module
-             
+        arg=$(echo $msg_in | awk -F ':' '{print $NF}') 
+        
+        if [ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]; then
+            output=$(./triggers/$trig "$channick" "$arg" "$msg_in")                       #raw output from module
             strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
                  
             if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
@@ -74,7 +75,7 @@ parse() {
             elif [[ $output =~ "[k]" ]]; then
                 kick $chan $strip
             else 
-                 msg_out $chan $(./triggers/$trig "$msg_in")
+                 msg_out $chan $(./triggers/$trig "$channick" "$arg" "$msg_in")
             fi
         fi
     done
@@ -85,10 +86,10 @@ log() {
     folderchan=$(echo $nickchan | sed 's/\//-/g')
     message=$(echo $msg_in | awk -F ':' '{print $NF}')
     if [[ -f ./logs/$folderchan ]] ; then
-        echo $(date +nc | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     else
         touch ./logs/$folderchan
-        echo $(date +nc | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     fi
 }
 
