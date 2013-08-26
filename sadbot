@@ -49,7 +49,7 @@ parse() {
             handle
         fi
     done
-    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then
+    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
 
     IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
     for trig in ${TRIGGERS[@]}; do
@@ -63,7 +63,7 @@ parse() {
         
         arg=$(echo $msg_in | awk -F ':' '{print $NF}') 
         
-        if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then
+        if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
             output=$(./triggers/$trig "$channick" "$arg" "$msg_in")                       #raw output from module
             strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
                  
@@ -80,7 +80,7 @@ parse() {
                     kick $chan $strip
                 fi
             else 
-                 msg_out $chan $(./triggers/$trig "$channick" "$arg" "$msg_in")
+                 msg_out $chan $(./triggers/$trig "$channick" "$arg" "$msg_in")             #sends arguments to trigger 1 = nick of sender 2 = parsed input 3 = raw input
             fi
         fi
     done
@@ -121,7 +121,7 @@ handle() {
             kick $chan $strip
         fi
     else 
-        msg_out $chan $(./modules/$mod "$channick" "$arg" "$msg_in") 
+        msg_out $chan $(./modules/$mod "$channick" "$arg" "$msg_in")    #sends arguments to module 
     fi
 }
 
