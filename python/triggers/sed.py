@@ -30,9 +30,9 @@ if sed[:2] == "s/" and "/" in sed[2:]:
                 continue
             break
     # Checks if the second last character is a slash
-    if sed[-2] == "/":
+    if sed[-2:] == "/g":
         # The last character is the thing after the slash, for example /g
-        ye = msg[-1]
+        ye = "g"
     else:
         ye = ""
     i, o = sed.split('/')[1:3]
