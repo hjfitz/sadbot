@@ -1,3 +1,24 @@
+26/08/2013
+----------
+ndri> updated sed.py
+spectrum> fixed pyctcp in core loop
+spectrum> fixed shout same message
+Corg-kun> added blacklisting for shout
+
+25/08/2013
+----------
+spectrum> cleaned up code and added urban and google modules
+ndri> created sed.py
+spectrum> fixed trigger looping
+Corg-kun> created shout launcher
+
+24/08/2013
+----------
+spectrum> formatted log output
+doidbb> implemented logging
+spectrum> added trigger modules
+spectrum> added raw input as argument to all modules
+
 21/08/2013
 ---------
 Corg-kun> added kaboo module
