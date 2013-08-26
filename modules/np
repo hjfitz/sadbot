@@ -2,7 +2,7 @@
 if [[ $2 =~ "set" ]]; then
     cut=$(echo $3 | awk -F "set" '{print $NF}')
     echo "$1 $cut" >> ./data/lastdb
-    sort -u ./data/lastdb >! ./data/lastdb
+    lua5.1 ./lua/lastfm.lua $1 $cut
 else
     lua5.1 ./lua/lastfm.lua $1 $2
 fi
