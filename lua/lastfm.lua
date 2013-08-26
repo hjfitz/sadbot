@@ -1,47 +1,52 @@
-#!/usr/bin/env lua
-
-require("socket")
-
-function repspace(main, first, second)
-    local relapsed = string.sub(main, 1, string.find(main, first) -1 )
-    --
-    local temp = string.sub(main, string.find(main, first) + #first)
-    relapsed = relapsed .. second .. temp
-    
-    while string.find(relapsed, first) do
-    temp = string.sub(relapsed, string.find(relapsed, first) + #first)
-    relapsed = string.sub(relapsed, 1, string.find(relapsed, first) -1 )
-    
-    relapsed = relapsed .. second .. temp
-    end
-    
-    return relapsed
-end
-
-function getpage(url)
-    local http = require("socket.http") -- this is included with luasocket
-    local page = {}
-    local page, status = http.request(url) -- 1 = body, 2 = status?
-    if verbose then print(page, status) end
-    return page
-end
+local json = require("json")
+local http = require("socket.http")
+local url = require("socket.url")
 
 if arg[2] then
-    argz = arg[2]
+    user = arg[2]
 else
-    argz = arg[1]
+    user = arg[1]
 end
 
-local page = getpage('http://www.last.fm/user/' .. argz)
-        for l in page:gmatch("[^\r\n]+") do
-            if l:find('a href="/music/') then
-            local tit = l:sub((l:find('a href="/music/')+15), #l)
-            local title = tit:sub(1, (tit:find('"')-1))
-            if title:find('+') then title = repspace(title, '+', ' ') end
-            if title:find('/') then title = repspace(title, '/', '') end
-            if title:find('_') then title = repspace(title, '_', ' -- ') end
-            print(argz .. " last listened to: " .. title)
-            return
-        end
+local mt = {}   
+ 
+for line in io.lines'./data/lastdb' do
+    local nrow = {}
+    for n in line:gmatch'%S+' do
+        table.insert(nrow, tostring(n))
+    end
+    if #nrow > 0 then
+        table.insert(mt, nrow)
+    end
+end
+
+for i = 1,#mt do
+    if mt[i][1] == arg[1] then
+        row = i
+    end
+end                                                                                   
+
+if row and not arg[2] then
+    user = mt[row][2]
+end 
+
+local c = http.request(string.format("http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=%s&api_key=493c4be2f2d8d02dd3016d6c008e3886&format=json", user))
+local result = json.decode(c) or false
+
+if result.message then
+    print("No user with that name was found")
+elseif not result.recenttracks.total then
+    song = result.recenttracks.track[1].name
+    artist = result.recenttracks.track[1].artist["#text"]
+    album = result.recenttracks.track[1].album["#text"]
+
+    print("11" .. 
+        user .. "0" .. " last listened to: " .. "4" .. 
+        song .. "0" .. " by " .. "12" .. 
+        artist .. "0" .. " from " .. "13" ..
+        album .. "0"
+    )
+else
+    print("No songs to display")
 end
 

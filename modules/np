@@ -1,3 +1,8 @@
 #/bin/bash
-
-python ./python/lastfmnowplaying.py $1 $2
+if [[ $2 =~ "set" ]]; then
+    cut=$(echo $3 | awk -F "set" '{print $NF}')
+    echo "$1 $cut" >> ./data/lastdb
+    sort -u ./data/lastdb >! ./data/lastdb
+else
+    lua5.1 ./lua/lastfm.lua $1 $2
+fi
