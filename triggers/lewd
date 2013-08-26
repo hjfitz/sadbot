@@ -1,4 +1,0 @@
-#!/bin/bash
-
-if [[ $3 =~ ":lewd"]]; then
-    echo "ヽ(◔ ◡ ◔)ノ.･ﾟ*｡･+☆LEWD☆"
