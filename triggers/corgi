@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ $1 = "Corgi" && ( $2 =~ "na " || $2 =~ "lel") ]]; then
+if [[ $1 = "Corgi" && ($2 = "k" || $2 =~ "na " || $2 =~ "lel") ]]; then
     echo "[rb]LOOK AT ME THE KING OF SHITEPOSTE"
 fi
 
