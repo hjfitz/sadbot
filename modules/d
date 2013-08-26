@@ -1,0 +1,3 @@
+#/bin/bash
+
+python2 ./python/lmddgtfy.py $2
