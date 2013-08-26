@@ -13,8 +13,10 @@ if not arg[1] then
 else
     local result = http.request("http://api.urbandictionary.com/v0/define?term=" .. arg[1])
     local result = json.decode(result)
-        if(#result.list > 0) then
-            print(arg[1] .. ": " .. trim(result.list[1].definition:gsub('\r\n', ' ')))
-        end
+    if(#result.list > 0) then
+        print(arg[1] .. ": " .. trim(result.list[1].definition:gsub('\r\n', ' ')))
+    else
+        print("Could not get definition.")
+    end
 end
 
