@@ -49,7 +49,7 @@ parse() {
             handle
         fi
     done
-    if [[ $msg_in =~ " PRIVMSG " ]]; then
+    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then
 
     IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
     for trig in ${TRIGGERS[@]}; do
