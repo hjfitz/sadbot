@@ -6,13 +6,18 @@ cmds=$(for mod in ${MODULES[@]}; do echo $mod; done)
 IFS=$'\r\n' PYMOD=($(for file in ./python/*; do echo ${file##*/}; done)) 
 pycmds=$(for mod in ${PYMOD[@]}; do echo $mod; done)
 
+IFS=$'\r\n' TRIGS=($(for file in ./triggers/*; do echo ${file##*/}; done)) 
+trig=$(for mod in ${TRIGS[@]}; do echo $mod; done)
+
 IFS=$'\r\n' LUAMOD=($(for file in ./lua/*; do echo ${file##*/}; done))
 luacmds=$(for mod in ${LUAMOD[@]}; do echo $mod; done)
 
 if [[ ${2#?} = "lua" ]]; then
     out=$luacmds
-elif [[ ${2#?} = "py" ]]; then
+elif [[ ${2#?} =~ "py" ]]; then
     out=$pycmds
+elif [[ ${2#?} =~ "trig" ]]; then
+    out=$trig
 else
     out=$cmds
 fi
