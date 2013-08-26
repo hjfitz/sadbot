@@ -1,4 +1,3 @@
 #!/bin/bash
 
-if [[ $3 =~ ":lewd"]]; then
-    echo "ヽ(◔ ◡ ◔)ノ.･ﾟ*｡･+☆LEWD☆"
+python2 ./python/triggers/lewd.py $2
