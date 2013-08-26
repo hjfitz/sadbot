@@ -5,16 +5,17 @@
 import sys
 import urllib2
 a = sys.argv[1]
-
-with open('data/lastfm') as f:
-    d = f.readlines()[0]
-    if '>'+a in d:
-        i = d[d.find('>'+a+'|')+len(a)+2:d.find('<',d.find('>'+a+'|'))]
-    else:
-        sys.exit('Please use ":addnick" to add your username first!')
-
+if len(sys.argv) > 2:
+    i = sys.argv[2]
+else:
+    with open('data/lastfm') as f:
+        d = f.readlines()[0]
+        if '>'+a in d:
+            i = d[d.find('>'+a+'|')+len(a)+2:d.find('<',d.find('>'+a+'|'))]
+        else:
+            sys.exit('Please use ":addnick" to add your username first!')
 u = "http://www.last.fm/community/users/search?q="
-l = urllib2.urlopen(u+i).readlines()[425].strip('\n').strip(' ')
+l = urllib2.urlopen(u+i).readlines()[435].strip('\n').strip(' ')
 if l[:6] == "</div>":
     print 'na'
 else:
