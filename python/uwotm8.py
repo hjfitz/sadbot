@@ -2,6 +2,7 @@
 # Returns a proper insult
 # by andri
 import random
+
 m8 = [
 "il bash ye fookin ead in i sware on me mom",
 "if u got sumthn 2 say say it 2 me face",
@@ -20,6 +21,10 @@ m8 = [
 "yer a waste bruv. my homeboys be all over tha place & ill beat ya to a proper fokin pulp with me fists wanka",
 "ill borrow me m8s cricket paddle & see if that gets u the fok out o' newcastle ya daft kunt",
 "ima shite fury & ull drown in it m8. ur in proper mess ya knobhead",
-"il shank ur nan in the tits m8"
+"il shank ur nan in the tits m8",
+"r u 'avin a giggle ther m8?",
+"i've been at the pub since 4 bong an' im proper pissed m8 i'll toss u in the rubbish bin cuz u've gone off"
 ]
+
+# Returns a random line from the m8 list
 print random.choice(m8)
