@@ -41,7 +41,7 @@ conn() {
 parse() {
     IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
     for mod in ${MODULES[@]}; do                                    #loads modules
-        if [[ $msg_in =~ "::$mod" ]]; then
+        if [[ $msg_in =~ "::$mod " ]]; then
             delim="::$mod"                                          #searches for input with a prefix command
             arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
             get_chan $msg_in                #obtain the channel of origin and the sender
