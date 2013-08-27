@@ -10,7 +10,7 @@ local result = json.decode(c) or false      -- json hackery that returns a table
 if result.primaries then
     type = string.lower(result.primaries[1].terms[1].labels[1].text)
     definition = result.primaries[1].entries[2].terms[1].text
-    print(arg[2] .. " [" .. type .. "] " .. definition ".")
+    print(arg[2] .. " [" .. type .. "] " .. definition .. ".")
 else
     print("No definitions found")
 end
