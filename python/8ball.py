@@ -12,7 +12,7 @@ a = [
 'Certainly.',
 'No doubt about it.',
 'It\'s a well known fact.',
-'Indubitably',
+'Indubitably.',
 'I guess so.',
 'Indeed.',
 'I guess not.',
@@ -23,7 +23,11 @@ a = [
 'Why would you even consider that?',
 'Nope.',
 ]
+
+# Adds up the unicode code point values of the input
 c = 0
 for i in q:
     c += ord(i)
+    
+# The remainder of dividing the total unicode value by the length of the list of responses is a number in the range of 0 to the length of the list minus one, k?
 print a[c%len(a)]
