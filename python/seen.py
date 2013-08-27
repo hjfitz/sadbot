@@ -28,7 +28,7 @@ with open(logdir+channel) as f:
         last = f[-1]
         # Sets the time and message from the last variable
         time = ' '.join(last.split(' ')[0:2])[:-1]
-        msg = last[last.find('> ')+2:]
+        msg = last[last.find(' <'+nick+'> ')+len(nick)+4:]
         # Returns when the nick was last seen and what they were saying
         print "%s was last seen on %s saying \"%s\"" %(nick, time, msg)
     else: 
