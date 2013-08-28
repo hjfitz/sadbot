@@ -21,7 +21,8 @@ with open(logdir+channel) as f:
     f = f.read().split('\n')
     # Filters the log, so that only the lines of the nick remain
     # This might need to be changed depending on the log layout
-    f = filter(lambda x: ': <'+nick+'> ' in x, f)
+    # Lowering both, so the nicks aren't case sensitive
+    f = filter(lambda x: ': <'+nick.lower()+'> ' in x.lower(), f)
     # If the log is empty, the nick hasn't been seen
     if len(f) > 0:
         # Sets the last message in the filtered log to the last variable
