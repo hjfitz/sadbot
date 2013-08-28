@@ -1,3 +1,8 @@
-#!/bin/bash
-
-lua5.1 ./lua/weather.lua "$2"
+#/bin/bash
+if [[ $2 =~ "set" ]]; then
+    cut=$(echo "$3" | awk -F "set" '{print $NF}')
+    echo '$1 "$cut"' >> ./data/weatherdb
+    lua5.1 ./lua/weather.lua $1 "$cut"
+else
+    lua5.1 ./lua/weather.lua $1 $2
+fi

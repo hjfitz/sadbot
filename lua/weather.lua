@@ -1,16 +1,16 @@
 local json = require("json")
 local http = require("socket.http")
 local url = require("socket.url")
---[[
-if arg[2] then                  --set arguments to user variable
-    user = arg[2]
+
+if arg[2] then
+    location = string.gsub(arg[2]," ","_")
 else
-    user = arg[1]
+    location = string.gsub(arg[1]," ","_")
 end
 
 local mt = {}   
  
-for line in io.lines'./data/lastdb' do      -- make a two dimensional array from the database file
+for line in io.lines'./data/weatherdb' do      -- make a two dimensional array from the database file
     local nrow = {}                         -- containing the irc nick in the first dimension and
     for n in line:gmatch'%S+' do            -- the lastfm name in the second
         table.insert(nrow, tostring(n))
@@ -27,7 +27,7 @@ for i = 1,#mt do                            -- searches array for line containin
 end                                                                                   
 
 if row and not arg[2] then                  -- gets the second dimension (the corresponding lastfm name)
-    user = mt[row][2]
+    location = mt[row][2]
 end 
 --]]
 --[[
@@ -52,10 +52,10 @@ else
 end
 --]]
 
-location = string.gsub(arg[1]," ","_")
 
 local c = http.request("http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.places%20where%20text%3D%22" .. location .. "%22&format=json")
 local result = json.decode(c) or false
+if result.query.count ~= 0 then
 
 if #result.query.results.place > 1 then
     woeid = result.query.results.place[1].woeid
@@ -63,11 +63,7 @@ else
     woeid = result.query.results.place.woeid
 end
 
-if arg[2] == "f" or arg[2] == "F" then
-    unit = "f"
-else
-    unit = "c"
-end
+unit = "c"
 
 local d = http.request("http://query.yahooapis.com/v1/public/yql?q=%20select%20*%20from%20weather.forecast%20where%20woeid%3D%22" .. woeid .. "%22%20%20and%20u%3D%22" .. unit .. "%22%20&format=json&diagnostics=true&callback=")
 local q = json.decode(d)
@@ -77,5 +73,10 @@ htemp = q.query.results.channel.item.forecast[1].high  .. dunit
 ltemp = q.query.results.channel.item.forecast[1].low .. dunit
 condition = q.query.results.channel.item.forecast[1].text
 location = q.query.results.channel.location.city .. ", " .. q.query.results.channel.location.country
+humidity = q.query.results.channel.atmosphere.humidity .. "%"
+windspeed = q.query.results.channel.wind.speed .. q.query.results.channel.units.speed
+print("Temperature in " .. location .. ": " .. ctemp .. " (high: " .. htemp .. ", low: " .. ltemp .. ")" .. " Humidity: " .. humidity .. ", Windspeed: " .. windspeed .. ", Today: " .. condition .. ".")
 
-print("The current temperature in " .. location .. " is " .. ctemp .. " (high: " .. htemp .. ", low: " .. ltemp .. ") It is currently " .. condition .. ".")
+else 
+    print("Could not find any results")
+end
