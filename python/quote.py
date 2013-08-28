@@ -16,13 +16,14 @@ else:
     nick = argv[2] # If an argument is found, it gets the nick from the first argument
 channel = data.split(' ')[2].replace('/','-') # Gets the channel from the data and replaces slashes with dashes
 
-# Assumes that the logs are in the log directory with the same name as the channel, but slashes ar replaced with dashes
+# Assumes that the logs are in the log directory with the same name as the channel, but slashes are replaced with dashes
 with open(logdir+channel) as f:
     # Turns the log into a list
     f = f.read().split('\n')
     # Filters the log, so that only the lines of the nick remain
     # This might need to be changed depending on the log layout
-    f = filter(lambda x: ': <'+nick+'> ' in x, f)
+    # Lowering both, so the nicks aren't case sensitive
+    f = filter(lambda x: ': <'+nick.lower()+'> ' in x.lower(), f)
     # If the log is empty, the nick hasn't been seen talking
     if len(f) > 0:
         msg = choice(f) # Gets a random line from the log
