@@ -1,0 +1,5 @@
+#!/bin/bash
+#source ./config
+if [[  $2 = 'hey '$NICK || $2 = 'Hey ' $NICK || $2 = 'hello ' $NICK || $2 = 'Hello ' $NICK || $2 = 'oi ' $NICK || $2 = 'oioi ' $NICK   ]] ; then
+	echo "oioi"
+fi
