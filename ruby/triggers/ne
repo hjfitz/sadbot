@@ -1,4 +1,0 @@
-if ARGV[0].include? "miss ne" then
-    puts "\x034NE PLS COME BACK"
-end
-
