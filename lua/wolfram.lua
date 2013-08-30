@@ -11,7 +11,7 @@ local function loadConfigFile(name)
 
     return data
 end
-
+-- decodes json output
 function parsesubs(get)
     local rt = {}
 
@@ -46,7 +46,7 @@ else
         returns = "error: could not find related example to given input."
     end
 end
-
+-- get results from table
 if type(returns) == "table" then
     local q = url
     for i,x in pairs(returns) do
@@ -61,3 +61,5 @@ if type(returns) == "table" then
 else
     print(url .. " : " .. returns)
 end
+
+--prints formatted string

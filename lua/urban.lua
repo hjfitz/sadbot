@@ -7,7 +7,7 @@ arg[1] = arg[1]:gsub(" ", "_")
 function trim(s)
     return s:find'^%s*$' and '' or s:match'^%s*(.*%S)'
 end
-
+--trims argument for correct passing as url
 if not arg[1] then
     print("This command requires an argument")
 else
@@ -19,4 +19,4 @@ else
         print("Could not get definition.")
     end
 end
-
+-- prints json result from table 
