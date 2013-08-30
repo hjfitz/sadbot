@@ -64,7 +64,8 @@ parse() {
             chan=$nickchan                  #otherwise set the output as the channel of origin
         fi
         
-        arg=$(echo $msg_in | awk -F ':' '{print $NF}') 
+        IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
+        IFS=':' read -r raw arg <<< "$cut"                       #cuts raw message to first : (first character)
         
         if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
             output=$(./triggers/$trig "$channick" "$arg" "$msg_in")                       #raw output from module
@@ -93,7 +94,9 @@ fi
 
 log() {
     folderchan=$(echo $nickchan | sed 's/\//-/g')
-    message=$(echo $msg_in | awk -F ':' '{print $NF}')
+    IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
+    IFS=':' read -r raw message <<< "$cut"                       #cuts raw message to first : (first character)
+   
     if [[ -f ./logs/$folderchan ]] ; then
         echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     else
