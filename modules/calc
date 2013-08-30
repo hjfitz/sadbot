@@ -1,3 +1,3 @@
 #/bin/bash
 
-python2 ./python/calc.py $1 $2
+python ./python/calc.py $1 $2

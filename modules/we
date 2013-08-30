@@ -2,7 +2,7 @@
 if [[ $2 =~ "set" ]]; then
     cut=$(echo "$3" | awk -F "set" '{print $NF}')
     echo '$1 "$cut"' >> ./data/weatherdb
-    lua5.1 ./lua/weather.lua $1 "$cut"
+    lua ./lua/weather.lua $1 "$cut"
 else
-    lua5.1 ./lua/weather.lua $1 $2
+    lua ./lua/weather.lua $1 $2
 fi

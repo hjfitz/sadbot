@@ -1,3 +1,3 @@
 #/bin/bash
 
-python2 ./python/decide.py $1 $2
+python ./python/decide.py $1 $2

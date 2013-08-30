@@ -1,4 +1,4 @@
 #/bin/bash
 
-python2 ./python/beer.py $1 $2
+python ./python/beer.py $1 $2
 
