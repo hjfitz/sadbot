@@ -41,7 +41,10 @@ conn() {
 parse() {
     IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
     for mod in ${MODULES[@]}; do                                    #loads modules
-        if [[ $msg_in =~ "::$mod " ]]; then
+        IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
+        IFS=':' read -r raw cut <<< "$cut"                          #cuts again to second : (start of the actual message)
+        first_word=${cut%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
+        if [[ "$first_word" = ":$mod" ]]; then                      #checks if the first word of the message is equal to any of the modules in the array
             delim="::$mod"                                          #searches for input with a prefix command
             arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
             get_chan $msg_in                #obtain the channel of origin and the sender
