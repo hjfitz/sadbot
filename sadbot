@@ -103,6 +103,7 @@ log() {
         touch ./logs/$folderchan
         echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     fi
+    cat ./logs/$folderchan | sed -i 's/ACTION/*/' ./logs/$folderchan
 }
 
 handle() {
