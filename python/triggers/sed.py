@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-# sed spaghetti but it works
+# sed spaghetti for IRC
+# Usage: sed.py nick "raw irc data" sed input
 # by andri
 from sys import argv
-import os
+from subprocess import Popen, PIPE
 
 # This script is executed every time a PRIVMSG happens
 # Get nick, channel and PRIVMSG from argv
@@ -20,24 +21,28 @@ if sed[:2] == "s/" and "/" in sed[2:]:
     # Otherwise change this
     # Slashes should be replaced with dashes
     with open("logs/%s" %channel.replace('/','-')) as f:
-        f = f.read().split('\n')[::-1]
-        for i in f:
-            if nick in i:
-                # Finds last occurrence of the nick who wants to sed
-                msg = i[i.find(nick)+len(nick)+1:]
-                break
-            else: # This is used to break out of 2 loops
-                continue
-            break
-    # Checks if the second last character is a slash
+        # Reads log file, makes it into a list
+        f = f.read().split('\n')
+        # Filters the list, so only the nick's messages stay
+        f = filter(lambda x: nick in x, f)
+        # Gets the last message of the nick and makes it a string
+        msg = f[-1][f[-1].find(nick)+len(nick)+1:]
+    # Checks if the command ends with a /g or /I and writes it to the variable flag
     if sed[-2:] == "/g":
-        # The last character is the thing after the slash, for example /g
-        ye = "g"
+        flag = "g"
+    elif sed[-2:] == "/I":
+        flag = "I"
     else:
-        ye = ""
+        flag = ""
     i, o = sed.split('/')[1:3]
     # <OMGASLASH> is replaced by an escaped slash once again
     i, o = i.replace('<OMGASLASH>','\\/'), o.replace('<OMGASLASH>', '\\/')
-    # Uses os.popen to finally execute the command
-    a = os.popen("echo \"%s\" | sed 's/%s/%s/%s'" %(msg, i, o, ye)).read().replace('\n','')
-    print nick, a
+    # Uses subprocess.Popen to safely executed echo and sed
+    # First echoes the message
+    a = Popen(["echo", msg], stdout = PIPE)
+    # Then pipes the echo with sed to substitute the original message
+    b = Popen(["sed", "s/%s/%s/%s" %(i, o, flag)], stdin = a.stdout, stdout = PIPE)
+    # Then writes the output to a variable and prints it
+    c = b.stdout.read().strip('\n')
+    
+    print nick, c
