@@ -8,4 +8,5 @@ NICK_ALT="sadbottu"
 IDENT="SAD"
 IRCNAME="SAD"
 CHANNEL=( "#/g/love" "#/g/summer" "#sadbot-dev")
-PASSWORD="nae"
+ADMINS=( "Drooid" "andri" "spectrum")
+PASSWORD="nah"
