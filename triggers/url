@@ -17,4 +17,17 @@ if [[ $3 =~ 'http://'*'.'* ]] ; then
     fi
         HITSNEW=$(($HITS + 1))
         echo 'HITS='$HITSNEW > ./data/uri_hits_db
+elif [[ $3 =~ 'https://'*'.'* ]] ; then
+    source ./data/uri_hits_db
+    base=$(echo "$3" | awk -F 'https://' '{print $2}' | awk -F ' ' '{print $1}')
+    url="https://$base"
+    filename=$(echo $base | awk -F '/' '{print $2}')
+    if [[ $url =~ '.png' || $url =~ '.jpg' || $url =~ '.jpeg' || $url =~ '.gif' || $url =~ '.svg' || $url =~ '.tiff' ]] ; then
+        echo "[ URL number ${HITS} by ${1} ] - [ file = $filename | $(ruby ./ruby/getsize.rb $url)"
+    else
+        uri_parse=$(wget -O- $url -q -nv | grep '<title>' | awk -F '<title>' '{print $NF}' | awk -F '</title>' '{print $1}')
+        echo "[ URL number ${HITS} by ${1} ] - $uri_parse"
+    fi
+    HITSNEW=$(($HITS + 1))
+    echo 'HITS='$HITSNEW > ./data/uri_hits_db
 fi
