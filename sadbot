@@ -38,18 +38,44 @@ conn() {
     echo "NICK ${NICK}" >&3;
 }
 
+ppp() {														#post processing prefix function (parses certain types of inputs)
+	output=$(${1} "$channick" "$arg" "$msg_in")                       #raw output from module
+	strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
+    
+	if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
+		msg_act $chan $strip                 #appropriate output function
+	elif [[ $output =~ "[msg]" ]]; then
+		msg_out $chan $strip
+	elif [[ $output =~ "[rb]" ]]; then
+		msg_rbc $chan $strip
+	elif [[ $output =~ "[k]" ]]; then
+		if [[ $strip =~ "sadbot" ]]; then
+			msg_out $chan "nice try"
+		else
+			kick $chan $strip
+		fi
+	else 
+		msg_out $chan $(${1} "$channick" "$arg" "$msg_in")    #sends arguments to module 
+	fi
+}
+
 parse() {
     IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
     for mod in ${MODULES[@]}; do                                    #loads modules
-        IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
-        IFS=':' read -r raw cut <<< "$cut"                          #cuts again to second : (start of the actual message)
+        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw cut <<< "$cut"                     #cuts raw message to first : (first character) and cuts again to second : (start of the actual message)
+                                  
         first_word=${cut%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
         if [[ "$first_word" = ":$mod" ]]; then                      #checks if the first word of the message is equal to any of the modules in the array
             delim="::$mod"                                          #searches for input with a prefix command
             arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
             get_chan $msg_in                #obtain the channel of origin and the sender
 	        get_nick $msg_in
-            handle
+            if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
+				chan=$channick                  #if so, sets the output directly back to the sender
+			else
+				chan=$nickchan                  #otherwise set the output as the channel of origin
+			fi
+			ppp "./modules/$mod"
         fi
     done
     if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
@@ -64,28 +90,11 @@ parse() {
             chan=$nickchan                  #otherwise set the output as the channel of origin
         fi
         
-        IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
-        IFS=':' read -r raw arg <<< "$cut"                       #cuts raw message to first : (first character)
+        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
+                              
         
         if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
-            output=$(./triggers/$trig "$channick" "$arg" "$msg_in")                       #raw output from module
-            strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
-                 
-            if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
-                msg_act $chan $strip                 #appropriate output function
-            elif [[ $output =~ "[msg]" ]]; then
-                msg_out $chan $strip
-            elif [[ $output =~ "[rb]" ]]; then
-                msg_rbc $chan $strip 
-            elif [[ $output =~ "[k]" ]]; then
-                if [[ $strip =~ "sadbot" ]]; then
-                    msg_out $chan "nice try"
-                else
-                    kick $chan $strip
-                fi
-            else 
-                 msg_out $chan $(./triggers/$trig "$channick" "$arg" "$msg_in")             #sends arguments to trigger 1 = nick of sender 2 = parsed input 3 = raw input
-            fi
+           ppp "./triggers/$trig"
         fi
     done
 fi
@@ -94,8 +103,8 @@ fi
 
 log() {
     folderchan=$(echo $nickchan | sed 's/\//-/g')
-    IFS=':' read -r raw cut <<< "$msg_in"                       #cuts raw message to first : (first character)
-    IFS=':' read -r raw message <<< "$cut"                       #cuts raw message to first : (first character)
+    IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw message <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
+                         
    
     if [[ -f ./logs/$folderchan ]] ; then
         echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
@@ -106,31 +115,6 @@ log() {
     cat ./logs/$folderchan | sed -i 's/ACTION/*/' ./logs/$folderchan
 }
 
-handle() {
-    if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
-        chan=$channick                  #if so, sets the output directly back to the sender
-    else
-        chan=$nickchan                  #otherwise set the output as the channel of origin
-    fi
-    output=$(./modules/$mod $channick $arg $msg_in)                       #raw output from module
-    strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
-    
-    if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
-        msg_act $chan $strip                 #appropriate output function
-    elif [[ $output =~ "[msg]" ]]; then
-        msg_out $chan $strip
-    elif [[ $output =~ "[rb]" ]]; then
-        msg_rbc $chan $strip
-    elif [[ $output =~ "[k]" ]]; then
-        if [[ $strip =~ "sadbot" ]]; then
-            msg_out $chan "nice try"
-        else
-            kick $chan $strip
-        fi
-    else 
-        msg_out $chan $(./modules/$mod "$channick" "$arg" "$msg_in")    #sends arguments to module 
-    fi
-}
 
 main() {
     while [ true ]; do
