@@ -1,7 +1,6 @@
 require 'json'
 require 'net/http'
  
-
 if not ARGV[0] then                                             #checks for argument
     puts "please input a query to search"
 else
