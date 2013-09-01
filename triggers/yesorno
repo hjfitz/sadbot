@@ -1,0 +1,10 @@
+#!/bin/bash
+val=$(($RANDOM % 2)) 
+
+if [[ $2 =~ "y/n" ]]; then
+    if [ $val = 1 ]; then
+	echo "y"
+    else
+	echo "n"
+    fi
+fi
