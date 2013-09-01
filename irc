@@ -1,5 +1,69 @@
 #!/bin/bash
 
+
+ppp() {														#post processing prefix function (parses certain types of inputs)
+    output=$(${1} "$channick" "$arg" "$msg_in")                       #raw output from module
+    strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
+    
+    if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
+	msg_act $chan $strip                 #appropriate output function
+    elif [[ $output =~ "[msg]" ]]; then
+	msg_out $chan $strip
+    elif [[ $output =~ "[rb]" ]]; then
+ 	msg_rbc $chan $strip
+    elif [[ $output =~ "[k]" ]]; then
+	if [[ $strip =~ "sadbot" ]]; then
+            msg_out $chan "nice try"
+	else
+	    kick $chan $strip
+	fi
+    else 
+        msg_out $chan $(${1} "$channick" "$arg" "$msg_in")    #sends arguments to module 
+    fi
+}
+
+parse() {
+    IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
+    for mod in ${MODULES[@]}; do                                    #loads modules
+        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw cut <<< "$cut"                     #cuts raw message to first : (first character) and cuts again to second : (start of the actual message)
+                                  
+        first_word=${cut%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
+        if [[ "$first_word" = ":$mod" ]]; then                      #checks if the first word of the message is equal to any of the modules in the array
+            delim="::$mod"                                          #searches for input with a prefix command
+            arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
+            get_chan $msg_in                #obtain the channel of origin and the sender
+	        get_nick $msg_in
+            if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
+				chan=$channick                  #if so, sets the output directly back to the sender
+			else
+				chan=$nickchan                  #otherwise set the output as the channel of origin
+			fi
+			ppp "./modules/$mod"
+        fi
+    done
+    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
+
+    IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
+    for trig in ${TRIGGERS[@]}; do
+        get_chan $msg_in
+        get_nick $msg_in
+        if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
+            chan=$channick                  #if so, sets the output directly back to the sender
+        else
+            chan=$nickchan                  #otherwise set the output as the channel of origin
+        fi
+        
+        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
+                              
+        
+        if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
+           ppp "./triggers/$trig"
+        fi
+    done
+fi
+
+}
+	
 # shit's not ready
 # will be in future releases i guess
 log() {
@@ -8,17 +72,18 @@ log() {
                          
    
     if [[ -f ./logs/$folderchan ]] ; then
-        echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     else
         touch ./logs/$folderchan
-        echo $(date +nc +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
     fi
     cat ./logs/$folderchan | sed -i 's/ACTION/*/' ./logs/$folderchan
 }
 
 join() {
     for chan in ${CHANNEL[@]}; do
-        echo "JOIN $chan" >&3;
+        echo "» Joining $chan"
+	echo "JOIN $chan" >&3;
     done
 }
 
@@ -69,73 +134,9 @@ msg_rbc() {
 }
 
 msg_col() {
-    echo "PRIVMSG ${1} :$(echo -ne "\003")1${2}" >&3;
+    echo "PRIVMSG ${1} :$(echo -ne "\003")${3}${2}" >&3;
 }
 
 msg_act() {
     echo "PRIVMSG ${1} :$(echo -ne "\001")ACTION ${2}$(echo -ne "\001")" >&3;
 }
-
-ppp() {														#post processing prefix function (parses certain types of inputs)
-	output=$(${1} "$channick" "$arg" "$msg_in")                       #raw output from module
-	strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
-    
-	if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
-		msg_act $chan $strip                 #appropriate output function
-	elif [[ $output =~ "[msg]" ]]; then
-		msg_out $chan $strip
-	elif [[ $output =~ "[rb]" ]]; then
-		msg_rbc $chan $strip
-	elif [[ $output =~ "[k]" ]]; then
-		if [[ $strip =~ "sadbot" ]]; then
-			msg_out $chan "nice try"
-		else
-			kick $chan $strip
-		fi
-	else 
-		msg_out $chan $(${1} "$channick" "$arg" "$msg_in")    #sends arguments to module 
-	fi
-}
-
-parse() {
-    IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
-    for mod in ${MODULES[@]}; do                                    #loads modules
-        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw cut <<< "$cut"                     #cuts raw message to first : (first character) and cuts again to second : (start of the actual message)
-                                  
-        first_word=${cut%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
-        if [[ "$first_word" = ":$mod" ]]; then                      #checks if the first word of the message is equal to any of the modules in the array
-            delim="::$mod"                                          #searches for input with a prefix command
-            arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
-            get_chan $msg_in                #obtain the channel of origin and the sender
-	        get_nick $msg_in
-            if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
-				chan=$channick                  #if so, sets the output directly back to the sender
-			else
-				chan=$nickchan                  #otherwise set the output as the channel of origin
-			fi
-			ppp "./modules/$mod"
-        fi
-    done
-    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
-
-    IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
-    for trig in ${TRIGGERS[@]}; do
-        get_chan $msg_in
-        get_nick $msg_in
-        if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
-            chan=$channick                  #if so, sets the output directly back to the sender
-        else
-            chan=$nickchan                  #otherwise set the output as the channel of origin
-        fi
-        
-        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
-                              
-        
-        if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
-           ppp "./triggers/$trig"
-        fi
-    done
-fi
-
-}
-	
