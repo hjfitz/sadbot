@@ -1,78 +1,75 @@
 #!/usr/bin/env bash
 
 ppp() {														#post processing prefix function (parses certain types of inputs)
-    output=$(${1} "$channick" "$arg" "$msg_in")                       #raw output from module
     strip=$(echo $output | awk -F ']' '{print $NF}')   #removes prefixes
     
     if [[ $output =~ "[me]" ]]; then      #searches for prefixes in input and chooses
-	msg_act $chan $strip                 #appropriate output function
+	    msg_act $chan $strip                 #appropriate output function
     elif [[ $output =~ "[msg]" ]]; then
-	msg_out $chan $strip
+	    msg_out $chan $strip
     elif [[ $output =~ "[rb]" ]]; then
- 	msg_rbc $chan $strip
+ 	    msg_rbc $chan $strip
+    elif [[ $output =~ "[col]" ]]; then
+        msg_col $chan ${strip:1} ${strip:0:1}
     elif [[ $output =~ "[k]" ]]; then
-	if [[ $strip =~ "sadbot" ]]; then
+	    if [[ $strip =~ "sadbot" ]]; then
             msg_out $chan "nice try"
-	else
-	    kick $chan $strip
-	fi
+	    else
+	        kick $chan $strip
+	    fi
     else 
-        msg_out $chan $(${1} "$channick" "$arg" "$msg_in")    #sends arguments to module 
+        msg_out $chan $output    #sends arguments to module 
+    fi
+}
+
+handle() {
+    if [[ $(get_chan $msg_in) = $NICK ]]; then    #checks if private message is being recieved
+        chan=$(get_nick $msg_in)                 #if so, sets the output directly back to the sender
+    else
+        chan=$(get_chan $msg_in)                 #otherwise set the output as the channel of origin
+    fi
+                              
+    output=$(${1} "$(get_nick $msg_in)" "$arg" "$msg_in")
+
+    if [[ $output ]]; then                   #checks if script will actually output before sending
+        ppp
     fi
 }
 
 parse() {
-    IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))
+    IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))     #makes an array filled with the contents of ./modules
+    IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))   #makes an array filled with the contents of ./triggers
+    
+    IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"          #cuts raw message to first : (first character) and then to second : character
+    first_word=${arg%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
+    
     for mod in ${MODULES[@]}; do                                    #loads modules
-        IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw cut <<< "$cut"                     #cuts raw message to first : (first character) and cuts again to second : (start of the actual message)
-                                  
-        first_word=${cut%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
-        if [[ "$first_word" = ":$mod" ]]; then                      #checks if the first word of the message is equal to any of the modules in the array
-            delim="::$mod"                                          #searches for input with a prefix command
-            arg=$(echo $msg_in | awk -F $delim '{print $NF}')       #strips the input down to just the argument
-            get_chan $msg_in                #obtain the channel of origin and the sender
-	    get_nick $msg_in
-            if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
-	        chan=$channick                  #if so, sets the output directly back to the sender
-	    else
-	    	chan=$nickchan                  #otherwise set the output as the channel of origin
-	    fi
-	    ppp "./modules/$mod"
-        fi
-    done
-    if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
-        IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))
-        for trig in ${TRIGGERS[@]}; do
-            get_chan $msg_in
-            get_nick $msg_in
-            if [[ $nickchan = $NICK ]]; then    #checks if private message is being recieved
-                chan=$channick                  #if so, sets the output directly back to the sender
-            else
-                chan=$nickchan                  #otherwise set the output as the channel of origin
-            fi
-        
-            IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
-                              
-        
-            if [[ $(./triggers/$trig "$channick" "$arg" "$msg_in") ]]; then                   #checks if script will actually output before sending
-                ppp "./triggers/$trig"
+        for prefix in ${PREFIXES[@]}; do                            #loads prefixes from config
+            if [[ "$first_word" = "$prefix$mod" ]]; then           #checks if the first word of the message is equal to any of the modules in the array
+                IFS="${mod: -1}" read -r raw arg <<< "$arg"         #gets the last character of the module and prints all after it :say test (everything after 'y' ==> test)
+                handle "./modules/$mod"    
             fi
         done
-    fi
+    done
+    
+    for trig in ${TRIGGERS[@]}; do
+        if [[ $msg_in =~ " PRIVMSG " && ! $msg_in =~ ":py-ctcp" ]]; then    #only respond to triggers if detecting a PRIVMSG and not from py-ctcp
+            handle "./triggers/$trig"
+        fi
+    done
 }
 	
 # shit's not ready
 # will be in future releases i guess
 log() {
-    folderchan=$(echo $nickchan | sed 's/\//-/g')
-    IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw message <<< "$cut"                      #cuts raw message to first : (first character) and cuts raw message to first : (first character)
-                         
-   
+    folderchan=$(echo $(get_chan $msg_in) | sed 's/\//-/g')
+    IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw message <<< "$cut"                      #cuts raw message to first : (first character) and 
+                                                                                                       #cuts raw message to first second : (first character)
     if [[ -f ./logs/$folderchan ]] ; then
-        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$(get_nick $msg_in)> ${message}" >> ./logs/$folderchan
     else
         touch ./logs/$folderchan
-        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$channick> ${message}" >> ./logs/$folderchan
+        echo $(date +"%d/%m/%Y %H:%M:%S" | sed 's/[A-Za-z]ST 201[0-9]//g'): "<$(get_nick $msg_in)> ${message}" >> ./logs/$folderchan
     fi
     cat ./logs/$folderchan | sed -i 's/ACTION/*/' ./logs/$folderchan
 }
@@ -80,7 +77,7 @@ log() {
 join() {
     for chan in ${CHANNEL[@]}; do
         echo "» Joining $chan"
-	echo "JOIN $chan" >&3;
+	    echo "JOIN $chan" >&3;
     done
 }
 
@@ -95,19 +92,21 @@ ghost() {
         echo "NICK :${NICK_ALT}" >&3;
         echo "PRIVMSG nickserv :GHOST ${NICK} ${PASSWORD}" >&3;
         sleep 2;
-    ghost=false
-    join
-    sleep 2;
-    ident
+        ghost=false
+        join
+        sleep 2;
+        ident
     fi
 }
 
 get_nick() {
-    channick=$(echo ${1} | awk -F":" '{print $2}' | awk -F"\!" '{print $1}' 2>/dev/null)
+    local channick=$(echo ${1} | awk -F":" '{print $2}' | awk -F"\!" '{print $1}' 2>/dev/null)
+    echo $channick
 }
 
 get_chan() {
-    nickchan=$(echo ${1} | awk '{print $3}')
+    local nickchan=$(echo ${1} | awk '{print $3}')
+    echo $nickchan
 }
 
 ping() {
