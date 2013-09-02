@@ -9,4 +9,5 @@ IDENT="SAD"
 IRCNAME="SAD"
 CHANNEL=( "#/g/love" "#/g/summer" "#sadbot-dev")
 ADMINS=( "Drooid" "andri" "spectrum")
+PREFIXES( ":" ";" "." ">" )
 PASSWORD="nah"
