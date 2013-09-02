@@ -11,10 +11,10 @@ helpp() {
 verbose=false
 hlp=false
 case $@ in
-	-v) verbose=true;;
-	--verbose) verbose=true;;
-	-h) hlp=true;;
-	--help) hlp=true;;
+    -v) verbose=true;;
+    --verbose) verbose=true;;
+    -h) hlp=true;;
+    --help) hlp=true;;
 esac
 
 init() {
@@ -53,10 +53,10 @@ main() {
         fi
     done
     if $run ; then	#really hacky please fix me
-	    if $ghost ; then
-	        join
+	if $ghost ; then
+	    join
             echo "» Joining Channels"
-	        ident
+	    ident
         fi
         run=false
     fi
