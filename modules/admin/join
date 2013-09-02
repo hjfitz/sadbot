@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "JOIN $2" >&3
