@@ -39,6 +39,7 @@ handle() {
 parse() {
     IFS=$'\r\n' MODULES=($(for file in ./modules/*; do echo ${file##*/}; done))     #makes an array filled with the contents of ./modules
     IFS=$'\r\n' TRIGGERS=($(for file in ./triggers/*; do echo ${file##*/}; done))   #makes an array filled with the contents of ./triggers
+    IFS=$'\r\n' ADMINMODS=($(for file in ./modules/admin/*; do echo ${file##*/}; done))   #makes an array filled with the contents of ./triggers
     
     IFS=':' read -r raw cut <<< "$msg_in"; IFS=':' read -r raw arg <<< "$cut"          #cuts raw message to first : (first character) and then to second : character
     first_word=${arg%% *}                                       #obtains the first word of the message e.g (:raw     ::trikt   ==>  :raw)
@@ -49,6 +50,17 @@ parse() {
                 IFS="${mod: -1}" read -r raw arg <<< "$arg"         #gets the last character of the module and prints all after it :say test (everything after 'y' ==> test)
                 handle "./modules/$mod"    
             fi
+        done
+    done
+    
+    for adminmod in ${ADMINMODS[@]}; do                                    #loads modules
+        for admin in ${ADMINS[@]}; do
+            for prefix in ${PREFIXES[@]}; do                            #loads prefixes from config
+                if [[ "$first_word" = "$prefix$adminmod" && $(get_nick $msg_in) = $admin ]]; then           #checks if the first word of the message is equal to any of the modules in the array
+                    IFS="${adminmod: -1}" read -r raw arg <<< "$arg"         #gets the last character of the module and prints all after it :say test (everything after 'y' ==> test)
+                    handle "./modules/admin/$adminmod"    
+            	fi
+	    done
         done
     done
     
