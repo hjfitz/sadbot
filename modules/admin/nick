@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo "NICK $2" >&3
