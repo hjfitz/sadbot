@@ -7,7 +7,8 @@ import sys
 logdir = "logs/"
 # Checks if a nick entered, because this script needs an argument
 if len(sys.argv) == 2 or sys.argv[2].strip(' ') == '':
-    sys.exit("Seen whom?")
+    print "Seen whom?"
+    sys.exit()
 else:
     nick = sys.argv[2]
 
