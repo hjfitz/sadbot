@@ -8,7 +8,8 @@ msg = quote(' '.join(sys.argv[1:]))
 
 # Checks for argument
 if msg.strip(' ') == '':
-    sys.exit('No input')
+    print "No input."
+    sys.exit()
 # Uses urllib2's quote function to turn the input into a proper URL input
 url = "https://lmddgtfy.net/?q="
 
