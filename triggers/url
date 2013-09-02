@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $3 =~ 'http://'*'.'* ]] ; then
+if [[ $3 =~ 'http://'*'.'* && ! $1 = "[leet]" ]] ; then
     #gets the amount of hits from the database
     source ./data/uri_hits_db
     #parses the url input from the channel
@@ -17,7 +17,7 @@ if [[ $3 =~ 'http://'*'.'* ]] ; then
     fi
         HITSNEW=$(($HITS + 1))
         echo 'HITS='$HITSNEW > ./data/uri_hits_db
-elif [[ $3 =~ 'https://'*'.'* ]] ; then
+elif [[ $3 =~ 'https://'*'.'* ! $1 = "[leet]" ]] ; then
     source ./data/uri_hits_db
     base=$(echo "$3" | awk -F 'https://' '{print $2}' | awk -F ' ' '{print $1}')
     url="https://$base"
