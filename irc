@@ -46,7 +46,7 @@ parse() {
     
     for mod in ${MODULES[@]}; do                                    #loads modules
         for prefix in ${PREFIXES[@]}; do                            #loads prefixes from config
-            if [[ "$first_word" = "$prefix$mod" ]]; then           #checks if the first word of the message is equal to any of the modules in the array
+            if [[ "$first_word" = "$prefix$mod" || "$arg" = "$NICK, $mod" ]]; then           #checks if the first word of the message is equal to any of the modules in the array
                 arg="$(echo "$arg" | awk -v len="$((${#mod}+2))" '{ print substr( $0, len) }')" #had to resort back to awk hackery; takes 
 		handle "./modules/$mod" 							#the whole argument, and cuts the first few characters (#mod + 3), length of the module name + 3 for spaces
 	   
@@ -57,7 +57,8 @@ parse() {
     for adminmod in ${ADMINMODS[@]}; do                                    #loads modules
         for admin in ${ADMINS[@]}; do
             for prefix in ${PREFIXES[@]}; do                            #loads prefixes from config
-                if [[ "$first_word" = "$prefix$adminmod" && $(get_nick $msg_in) = $admin ]]; then           #checks if the first word of the message is equal to any of the modules in the array
+                if [[ "$first_word" = "$prefix$adminmod" && $(get_nick $msg_in) = $admin ]]; then       # checks if the first word of the message
+													# is equal to any of the modules in the array
                     arg="$(echo "$arg" | awk -v len="$((${#adminmod}+2))" '{ print substr( $0, len) }')" #had to resort back to awk hackery; takes 
                     handle "./modules/admin/$adminmod"    
             	fi
