@@ -46,9 +46,9 @@ parse() {
     
     for mod in ${MODULES[@]}; do                                    #loads modules
         for prefix in ${PREFIXES[@]}; do                            #loads prefixes from config
-            if [[ "$first_word" = "$prefix$mod" || "$arg" = "$NICK, $mod" ]]; then           #checks if the first word of the message is equal to any of the modules in the array
+            if [[ "$first_word" = "$prefix$mod" || "$arg" =~ "$NICK, $mod" ]]; then           #checks if the first word of the message is equal to any of the modules in the array
                 if [[ "$arg" =~ "$NICK" ]]; then
-		    arg="$(echo "$arg" | awk -v len="$((${#mod}+${#NICK}+3}))" '{ print substr( $0, len) }')"
+		    arg="$(echo "$arg" | awk -v len="$((${#NICK}+${#mod}+3))" '{ print substr( $0, len) }')"
                 else
 		    arg="$(echo "$arg" | awk -v len="$((${#mod}+2))" '{ print substr( $0, len) }')" #had to resort back to awk hackery; takes 
 		fi
