@@ -1,4 +1,6 @@
 require 'open-uri'
+require 'open_uri_redirections'
+require 'pp'
 require 'net/http'
 
 input = ARGV[1]
@@ -21,16 +23,14 @@ def remote_file_exists?(url)
 end
 
 if input =~ URI::regexp					#checks for url
-    if remote_file_exists?(input) then
-    	urls = URI.extract(input)				#extracts urls
-    	open(urls[0]).read =~ /<title>(.*?)<\/title>/	#get title
-    	file = open(urls[0])
-    	if $1
-	    puts "Site Title: #{$1}"
-    	else
-	    puts "Type: #{file.content_type}; Size: #{humanise(file.size)}"
-        end					
-    else
-	puts "Site Title - Error: 404 file not found"
-    end
+    urls = URI.extract(input)				#extracts urls  
+    file = open(urls[0], :allow_redirections => :safe) { |f|
+        f.read =~ /<title>(.*?)<\/title>/ 
+	if $1
+            puts "Site Title: #{$1}"
+        else
+            puts "Type: #{f.meta['content-type']}; Size: #{humanise(f.meta['content-length'].to_i)}"
+        end
+    }
+    
 end
