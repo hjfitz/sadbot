@@ -1,3 +1,0 @@
-#/bin/bash
-
-lua ./lua/lastfm.lua $1

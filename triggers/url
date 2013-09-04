@@ -1,3 +1,4 @@
 #!/bin/bash
-
-ruby ./ruby/triggers/url.rb "$1" "$2" "$3"
+if [[ "$3" =~ 'http://'*'.'* || "$3" =~ 'https://'*'.'*  ]] ; then
+    ruby ./ruby/triggers/url.rb "$1" "$2" "$3"
+fi
