@@ -11,4 +11,4 @@ else:
     recipient = ' '.join(argv[2:]).strip(' ')
 
 # [me] is the ACTION keyword for the bot
-print "[me] hands %s a beer." %recipient
+print "[me]hands %s a beer." %recipient
