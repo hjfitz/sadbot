@@ -26,4 +26,4 @@ for line in entries
     new.syswrite(line)
 end
 
-File.close
+new.close
