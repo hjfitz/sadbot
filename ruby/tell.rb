@@ -13,4 +13,4 @@ dest_nick = input.split(' ')[0]
 message = input.split(' ').drop(1).join(' ')
 f.syswrite("#{chan} #{src_nick} #{dest_nick} #{message}\n")
 
-puts "I'll gab dat 2 #{dest_nick}'s mug for you"    
+puts "I'll pip that to #{dest_nick} for you"    
