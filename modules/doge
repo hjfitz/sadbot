@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-python ./python/doge.py $1 $2 $3 
