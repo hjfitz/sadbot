@@ -6,6 +6,8 @@ helpp() {
     echo " "
     echo "» SADBOT -configuration for networks + channels found in sadbot/config"
     echo "» modues found in sadbot/modules - called by filename, output in to channel whatever the file prints"
+    echo " "
+    exit 1
 }
 
 verbose=false
