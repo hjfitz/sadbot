@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 run=true
+verbose=false
 
-helpp() {
+print_help() {
     echo " "
     echo "» SADBOT -configuration for networks + channels found in sadbot/config"
     echo "» modues found in sadbot/modules - called by filename, output in to channel whatever the file prints"
@@ -10,20 +11,15 @@ helpp() {
     exit 1
 }
 
-verbose=false
-hlp=false
-case $@ in
-    -v) verbose=true;;
-    --verbose) verbose=true;;
-    -h) hlp=true;;
-    --help) hlp=true;;
-esac
+while getopts vh args; do
+    case $args in
+        v) verbose=true;;
+        h) print_help; exit 1;;
+    esac
+done
 
 init() {
     ghost=true
-    if $hlp ; then 
-        helpp
-    fi
     source ./config
     source ./irc
     echo " "
@@ -48,8 +44,8 @@ main() {
 	fi
     parse
     ping
-    ghost 		#will ghost but doesn't join channels
-    for chan in ${CHANNEL[@]}; do											#spectrum> not really sure how this works, but it works so I'll leave it like this
+    ghost 
+    for chan in ${CHANNEL[@]}; do			#spectrum> not really sure how this works, but it works so I'll leave it like this
         if [[ $msg_in =~ "PRIVMSG $chan" ]]; then
             log
         fi
