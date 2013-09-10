@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-if [[ $1 =~ 'doge ' ]]; then
+if [[ $2 =~ 'doge' ]]; then
     python ./python/doge.py $1 $2 $3 
 fi
