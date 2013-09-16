@@ -1,3 +1,6 @@
 #!/bin/bash
-
-ruby ./ruby/tell.rb "$1" "$2" "$3"
+if [[ -f ./data/telldb ]]; then
+    ruby ./ruby/tell.rb "$1" "$2" "$3"
+else;
+    touch ./data/telldb
+    ruby ./ruby/tell.rb "$1" "$2" "$3"
