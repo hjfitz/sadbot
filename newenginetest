@@ -10,8 +10,10 @@ IFS=$'\r\n' MODULES+=($(for ruby in ./newmodules/*.rb; do echo ${ruby##*/}; done
 IFS=$'\r\n' MODULES+=($(for lua in ./newmodules/*.lua; do echo ${lua##*/}; done))
 # Next, we echo the contents of the array of which we have created
 echo ${MODULES[@]}
+
+# loops through all of the modules, if the arg is roughly the same as the filename, it runs it
 for mod in ${MODULES[@]}; do
-    if [[ $1 = $mod ]]; then
+    if [[ $1 = "${mod%.*}" ]]; then
         if [[ $mod =~ '.py' ]]; then
             python ./newmodules/$mod
         elif [[ $mod =~ '.lua' ]]; then
@@ -21,8 +23,8 @@ for mod in ${MODULES[@]}; do
         else
             echo 'doid'
         fi
-    else
-        echo 'error'
+ #   else
+  #  echo 'error'
     fi
 done
 
