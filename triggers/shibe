@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [[ ($2 =~ "wow") || ($2 =~ "such") || ($2 =~ "most") || ($2 =~ "top") ]]; then
+    ./python/shibe.py
+fi
