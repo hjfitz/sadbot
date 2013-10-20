@@ -1,0 +1,28 @@
+#!/bin/bash
+# New module engine
+# Should work with multiple programming languages (WHY)
+# I mean should
+# Harry Fitzgerald - doidbb - 2013
+
+# First, we add python modules - files ending in .py
+IFS=$'\r\n' MODULES=($(for python in ./newmodules/*.py; do echo ${python##*/}; done))
+IFS=$'\r\n' MODULES+=($(for ruby in ./newmodules/*.rb; do echo ${ruby##*/}; done))
+IFS=$'\r\n' MODULES+=($(for lua in ./newmodules/*.lua; do echo ${lua##*/}; done))
+# Next, we echo the contents of the array of which we have created
+echo ${MODULES[@]}
+for mod in ${MODULES[@]}; do
+    if [[ $1 = $mod ]]; then
+        if [[ $mod =~ '.py' ]]; then
+            python ./newmodules/$mod
+        elif [[ $mod =~ '.lua' ]]; then
+            lua5.1 ./newmodules/$mod
+        elif [[ $mod =~ '.rb' ]]; then
+            ruby ./newmodules/$mod
+        else
+            echo 'doid'
+        fi
+    else
+        echo 'error'
+    fi
+done
+
