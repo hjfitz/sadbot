@@ -1,28 +1,26 @@
 #!/usr/bin/env python
 
-from random import randint
+import random
 
-randSpaces = randint(1,20)
+randSpaces = random.randint(1,20)
 randSpaces = randSpaces * " "
-randColor  = randint(0,16)
-randMessage= randint(0,5)
-shib       = "top error"
+randColor  = random.randint(0,16)
+randMessage= random.randint(0,5)
+shibArray  = [
+        "wow",
+        "such computer",
+        "top shitpost",
+        "much andri",
+        "much spectrum",
+        "much computer",
+        "top shibe",
+        "so shitpost",
+        "waow",
+        "all of interned",
+        "very 1338",
+        "most linux",
+        ]
 
-if randMessage == 0:
-    shib = "wow"
-elif randMessage == 1:
-    shib = "such computer"
-elif randMessage == 2:
-    shib = "top shitpost"
-elif randMessage == 3:
-    shib = "so shitpost"
-elif randMessage == 4:
-    shib = "waow"
-elif randMessage == 5:
-    shib = "all of interned"
-elif randMessage == 6:
-    shib = "very 1338"
-elif randMessage == 7:
-    shib = "most linux"
+shib = random.choice(shibArray)
 
 print("\x03" + str(randColor) + randSpaces + shib)
