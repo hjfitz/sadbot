@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+#!/usr/bin/env python2
 # shoutbot handler
 # by Corg-kun
 
@@ -22,7 +22,7 @@ with open("./data/shoutblacklist", "r") as bl:
             #so chooses another element until "out and "message are distinct
             while out == message:
                 out = choice(db)
-            print out
+            print(out)
             #check to see if the message already exists in the db, if so, return a line
             #from the db but do not write the new message it to the db.
             if not message in db:

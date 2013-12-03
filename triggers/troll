@@ -1,0 +1,5 @@
+#!/bin/bash
+
+if [[ $1 == "sadbot" ]]; then
+  echo ":inane wow suicide y/n >implying k lewd fukthistrigger sanic http://ddg.gg booty intensifies"
+fi

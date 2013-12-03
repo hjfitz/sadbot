@@ -1,5 +1,6 @@
 #!/bin/bash
 
-if [[ $3 =~ ":hue" ]]; then
-    echo "$(echo -ne "\003")4hue$(echo -ne "\003")3 hue$(echo -ne "\003")2 hue"
+if [[ $3 =~ "hue" ]]; then
+ #   echo "$(echo -ne "\003")4hue$(echo -ne "\003")3 hue$(echo -ne "\003")2 hue"
+echo "hue"
 fi

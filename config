@@ -3,11 +3,11 @@
 VERSION="0.1.3"
 NETWORK="irc.rizon.net"
 PORT="6667"
-NICK="sadbot"
+NICK="shebangang"
 NICK_ALT="sadbottu"
 IDENT="SAD"
 IRCNAME="SAD"
 CHANNEL=( "#/g/love" "#/g/summer" "#sadbot-dev")
-ADMINS=( "Drooid" "andri" "spectrum")
+ADMINS=( "droid" )
 PREFIXES=( "~" "#" ":" ";" "." ">" "»" )
 PASSWORD="spectrumxcorgiOTP"

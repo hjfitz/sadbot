@@ -1,6 +1,8 @@
 #!/bin/bash
 
-if [[ $1 = "Corgi" && ($2 = "k" || $2 =~ "na " || $2 =~ "lel") ]]; then
-    echo "[rb]LOOK AT ME THE KING OF SHITEPOSTE"
+#if [[ $1 = "Corgi" && ($2 = "k" || $2 =~ "na " || $2 =~ "lel") ]]; then
+#    echo "[rb]LOOK AT ME THE KING OF SHITEPOSTE"
+#fi
+if [[ $2 =~ "inane" ]]; then
+  echo ":inane"
 fi
-
